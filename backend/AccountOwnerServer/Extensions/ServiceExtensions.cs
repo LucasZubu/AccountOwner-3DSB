@@ -2,6 +2,7 @@ using Contracts;
 using LoggerService;
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Repository;
 
 namespace AccountOwnerServer.Extensions;
 
@@ -13,10 +14,9 @@ public static class ServiceExtensions
         {
             options.AddPolicy("CorsPolicy",
                 builder => builder
-                .AllowAnyOrigin()  // WithOrigins("dominio")
-                .AllowAnyMethod()  // WithMethods("GET", "POST")
-                .AllowAnyHeader()  // WithHeaders("accept", "content-type")
-            );
+                .AllowAnyOrigin()    // WithOrigins("dominio")
+                .AllowAnyMethod()    // WithMethods("POST", "GET")
+                .AllowAnyHeader());  // WithHeaders("accept", "content-type")
         });
     }
 
@@ -24,7 +24,6 @@ public static class ServiceExtensions
     {
         services.Configure<IISOptions>(options =>
         {
-
         });
     }
 
@@ -36,9 +35,16 @@ public static class ServiceExtensions
     public static void ConfigureMySqlContext(this IServiceCollection services, IConfiguration config)
     {
         var conn = config["mysqlconnection:connectionString"];
+        var serverVersion = ServerVersion.AutoDetect(conn);
         services.AddDbContext<RepositoryContext>(
-            o => o.UseMySql(conn, ServerVersion.AutoDetect(conn))
+            o => o.UseMySql(conn, serverVersion)
         );
     }
+
+    public static void ConfigureRepositoryWrapper(this IServiceCollection services)
+    {
+        services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+    }
+
 
 }
