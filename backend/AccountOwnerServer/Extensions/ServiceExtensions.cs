@@ -46,5 +46,4 @@ public static class ServiceExtensions
         services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
     }
 
-
 }
