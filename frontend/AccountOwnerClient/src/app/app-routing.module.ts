@@ -1,10 +1,46 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 
-const routes: Routes = [];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { EnvironmentUrlService } from './shared/services/environment-url.service';
+import { Owner } from './_interfaces/owner.model';
+@Injectable({
+  providedIn: 'root',
 })
-export class AppRoutingModule { }
+export class OwnerRepositoryService {
+  constructor(
+    private http: HttpClient,
+    private envUrl: EnvironmentUrlService
+  ) {}
+  public getOwners = (route: string) => {
+    return this.http.get<Owner[]>(
+      this.createCompleteRoute(route, this.envUrl.urlAddress)
+    );
+  };
+  public createOwner = (route: string, owner: Owner) => {
+    return this.http.post<Owner>(
+      this.createCompleteRoute(route, this.envUrl.urlAddress),
+      owner,
+      this.generateHeaders()
+    );
+  };
+  public updateOwner = (route: string, owner: Owner) => {
+    return this.http.put(
+      this.createCompleteRoute(route, this.envUrl.urlAddress),
+      owner,
+      this.generateHeaders()
+    );
+  };
+  public deleteOwner = (route: string) => {
+    return this.http.delete(
+      this.createCompleteRoute(route, this.envUrl.urlAddress)
+    );
+  };
+  private createCompleteRoute = (route: string, envAddress: string) => {
+    return `${envAddress}/${route}`;
+  };
+  private generateHeaders = () => {
+    return {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+    };
+  };
+}
