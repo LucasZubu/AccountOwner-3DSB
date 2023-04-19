@@ -1,46 +1,17 @@
+import { HomeComponent } from './home/home.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { NotFoundComponent } from './error-pages/not-found/not-found.component';
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { EnvironmentUrlService } from './shared/services/environment-url.service';
-import { Owner } from './_interfaces/owner.model';
-@Injectable({
-  providedIn: 'root',
+const routes: Routes = [
+  { path: 'home', component: HomeComponent },
+  { path: 'owner', loadChildren:()=> import('./owner/owner.module').then(m =>m.OwnerModule)},
+  { path: '404', component: NotFoundComponent },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '**', redirectTo: '/404', pathMatch: 'full' }
+];
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
 })
-export class OwnerRepositoryService {
-  constructor(
-    private http: HttpClient,
-    private envUrl: EnvironmentUrlService
-  ) {}
-  public getOwners = (route: string) => {
-    return this.http.get<Owner[]>(
-      this.createCompleteRoute(route, this.envUrl.urlAddress)
-    );
-  };
-  public createOwner = (route: string, owner: Owner) => {
-    return this.http.post<Owner>(
-      this.createCompleteRoute(route, this.envUrl.urlAddress),
-      owner,
-      this.generateHeaders()
-    );
-  };
-  public updateOwner = (route: string, owner: Owner) => {
-    return this.http.put(
-      this.createCompleteRoute(route, this.envUrl.urlAddress),
-      owner,
-      this.generateHeaders()
-    );
-  };
-  public deleteOwner = (route: string) => {
-    return this.http.delete(
-      this.createCompleteRoute(route, this.envUrl.urlAddress)
-    );
-  };
-  private createCompleteRoute = (route: string, envAddress: string) => {
-    return `${envAddress}/${route}`;
-  };
-  private generateHeaders = () => {
-    return {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-    };
-  };
-}
+export class AppRoutingModule { }
