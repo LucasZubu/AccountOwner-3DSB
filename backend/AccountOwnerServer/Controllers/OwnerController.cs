@@ -1,26 +1,27 @@
 using AutoMapper;
 using Contracts;
 using Entities.DataTransferObjects;
-using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
+using Entities.Models;
 
 namespace AccountOwnerServer.Controllers;
-
 [Route("api/owner")]
 [ApiController]
 public class OwnerController : ControllerBase
 {
     private ILoggerManager _logger;
-    private IRepositoryWrapper _repository;
-    private readonly IMapper _mapper;
 
-    public OwnerController(ILoggerManager logger, IRepositoryWrapper repository, IMapper mapper)
+    private IRepositoryWrapper _repository;
+
+    private IMapper _mapper;
+
+    public OwnerController(ILoggerManager logger, IRepositoryWrapper repository, IMapper
+    mapper)
     {
-        _mapper = mapper;
         _logger = logger;
         _repository = repository;
+        _mapper = mapper;
     }
-
     [HttpGet]
     public IActionResult GetAllOwners()
     {
@@ -28,7 +29,6 @@ public class OwnerController : ControllerBase
         {
             var owners = _repository.Owner.GetAllOwners();
             _logger.LogInfo($"Retornando todos os owners do banco de dados.");
-
             var ownersResult = _mapper.Map<IEnumerable<OwnerDto>>(owners);
             return Ok(ownersResult);
         }
@@ -38,7 +38,6 @@ public class OwnerController : ControllerBase
             return StatusCode(500, "Erro Interno do Servidor");
         }
     }
-
     [HttpGet("{id}", Name = "OwnerById")]
     public IActionResult GetOwnerById(Guid id)
     {
@@ -63,8 +62,6 @@ public class OwnerController : ControllerBase
             return StatusCode(500, "Erro Interno do Servidor");
         }
     }
-
-
     [HttpGet("{id}/account")]
     public IActionResult GetOwnerWithDetails(Guid id)
     {
@@ -89,7 +86,6 @@ public class OwnerController : ControllerBase
             return StatusCode(500, "Erro Interno do Servidor");
         }
     }
-
     [HttpPost]
     public IActionResult CreateOwner([FromBody] OwnerForCreationDto owner)
     {
@@ -117,7 +113,6 @@ public class OwnerController : ControllerBase
             return StatusCode(500, "Erro Interno do Servidor");
         }
     }
-
     [HttpPut("{id}")]
     public IActionResult UpdateOwner(Guid id, [FromBody] OwnerForUpdateDto owner)
     {
@@ -150,7 +145,6 @@ public class OwnerController : ControllerBase
             return StatusCode(500, "Erro Interno do Servidor");
         }
     }
-
     [HttpDelete("{id}")]
     public IActionResult DeleteOwner(Guid id)
     {
@@ -164,8 +158,8 @@ public class OwnerController : ControllerBase
             }
             if (_repository.Account.AccountsByOwner(id).Any())
             {
-                _logger.LogError($"O owner com id: {id}, não pode ser excluído, pois possuir contas relacionadas.Exclua as contas primeiro.");
-            return BadRequest("Não é possível excluir o owner. Possui contas relacionadas.Exclua as contas primeiro.");
+                _logger.LogError($"O owner com id: {id}, não pode ser excluído, pois possuir contas relacionadas. Exclua as contas primeiro.");
+                return BadRequest("Não é possível excluir o owner. Possui contas relacionadas. Exclua as contas primeiro.");
             }
             _repository.Owner.DeleteOwner(owner);
             _repository.Save();
@@ -177,5 +171,4 @@ public class OwnerController : ControllerBase
             return StatusCode(500, "Erro Interno do Servidor");
         }
     }
-
 }

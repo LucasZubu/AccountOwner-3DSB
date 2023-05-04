@@ -1,12 +1,12 @@
 using Contracts;
 using Entities;
-
 namespace Repository;
-
 public class RepositoryWrapper : IRepositoryWrapper
 {
     private RepositoryContext _repoContext;
+
     private IOwnerRepository _owner;
+
     private IAccountRepository _account;
 
     public IOwnerRepository Owner
@@ -37,7 +37,7 @@ public class RepositoryWrapper : IRepositoryWrapper
     {
         _repoContext = repositoryContext;
     }
-
+    
     public void Save()
     {
         _repoContext.SaveChanges();

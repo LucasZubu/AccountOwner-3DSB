@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
-  urlAddress: 'http://www.accountower.com'
+    production: true,
+    urlAddress: 'http://www.accountowner.com'
 };
