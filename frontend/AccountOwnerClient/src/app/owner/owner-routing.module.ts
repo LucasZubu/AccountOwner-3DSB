@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+<<<<<<< HEAD
 import { OwnerDetailsComponent } from './owner-details/owner-details.component';
 
 import { OwnerListComponent } from './owner-list/owner-list.component';
@@ -13,6 +14,13 @@ const routes: Routes = [
   { path: 'create', component: OwnerCreateComponent },
   { path: 'update/:id', component: OwnerUpdateComponent },
   { path: 'delete/:id', component: OwnerDeleteComponent }
+=======
+import { OwnerListComponent } from './owner-list/owner-list.component';
+
+
+const routes: Routes = [
+  { path:'list', component: OwnerListComponent }
+>>>>>>> 7713012396afc9b6a75dbba6bccd3a861b2394a1
 ];
 
 @NgModule({
